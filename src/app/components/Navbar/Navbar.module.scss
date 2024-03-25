@@ -1,0 +1,25 @@
+
+.menu {
+
+}
+
+.list {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 500;
+}
+
+.item {
+  &:not(:last-child) {
+    margin-right: 15px;
+  }
+}
+
+.active {
+  color: yellow;
+}

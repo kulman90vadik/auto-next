@@ -1,0 +1,27 @@
+.link {
+  position: relative;
+
+  span {
+    font-size: 14px;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    border-radius: 50%;
+    background-color: yellow;
+    color: rgb(0, 0, 0);
+    width: 16px;
+    height: 16px;
+    display: block;
+    font-weight: 700;
+    display: flex;
+    line-height: 16px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.icon {
+  width: 36px;
+  height: 37px;
+  stroke: white;
+}

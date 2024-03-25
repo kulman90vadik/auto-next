@@ -1,0 +1,25 @@
+
+.header {
+  position: fixed;
+  background-color: transparent;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 20px 0;
+  // background-color: rgba(#132926, 0.8);
+}
+
+.logo {
+  margin-right: auto;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bg {
+  background-color: rgba(#132926, 0.8);
+}

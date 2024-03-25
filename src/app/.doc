@@ -1,0 +1,271 @@
+const {push, replace} = useRouter()
+const {asPath, pathname} = useRouter()
+onClick={() => push('/)}
+onClick={() => replace('/)}
+
+
+npx create-next-app
+src no
+router yes
+
+          app
+             about
+                  page.tsx
+             contact
+                  page.tsx
+
+
+на уровне с app создаём components
+в lotyout header footer main metadata
+
+app
+   blog
+       page.tsx
+       [id]
+          page.tsx    -> type Props = {params: {id: string;}}
+                      -> const Post({params: {id}}: Props) {
+                        return <div>{id}</div>
+                      }
+
+
+
+    children: React.ReactNode 
+
+
+<!-- ////////////meta data////////////// -->
+    в динамичских страницах
+    params передаётся в компонент так же
+    export function generateMetadata({params: {id}}: Props) {
+      return {
+        title: id
+      }
+    }
+
+    meta data в обычных страницах
+    export const metadata: Metadata = {
+      title: "About title"
+    }
+<!-- ///////////////получение данных в странице блог//////////////// -->
+
+app
+   posts
+       page.tsx
+          async function getData() {
+            const respons = await FETCH(`https://jsonplaceholder.typicode.com/posts`)
+            return respons.json()
+          }
+
+в next может быть async func
+        export default async function Posts() {
+          const posts = await getData();
+          return(
+            <>
+              {posts.map(post => Link href={`/blog/${post.id}`})}
+            </>
+          )
+        }
+
+
+
+'use client' --- тогда могу использовать хукииии
+
+<!-- ///////////////КЭЩИРОВАНИЕ ДАННЫХ ПРИ ХАПРОСЕ FETCH//////////////// -->
+        запросы будут не так часто происходить 1 раз в минуту
+          async function getData() {
+            const respons = await FETCH(`https://jsonplaceholder.typicode.com/posts`, {
+              next: {
+                revalidate: 60
+              }
+            })
+
+            return respons.json()
+
+          }
+
+<!-- /////////////// в динамической стр.ПОЛУЧЕНИЕ ДАННЫХ ЧЕРЕЗ id ПРИ ХАПРОСЕ FETCH//////////////// -->
+        запросы будут не так часто происходить 1 раз в минуту
+          async function getData(id: string) {
+            const respons = await FETCH(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+              next: {
+                revalidate: 60
+              }
+            })
+            return respons.json()
+          }    
+
+              export function generateMetadata({params: {id}}: Props) {
+                const post = await getData(id);
+                return {
+                  title: post.title
+                }
+              } 
+
+        type Props = {
+          params: {
+            id: string
+          }
+        }      
+
+          export default async function Post({params: {id}}: Props) {
+            const post = await getData(id);
+            return <h2>{post.title}</h2>
+          }
+
+<!-- ////////////loading/////////////// -->
+app
+   posts
+       page.tsx
+       loading.tsx
+        export default function LoadingPost() {
+            return <h2>Loading.............</h2>
+        }
+
+<!-- ////////////Error/////////////// -->
+'use client'
+app
+   posts
+       page.tsx
+       error.tsx
+        export default function ErrorPost({error}: {error: Error}) {
+            return <h2>Oooppppps!!! {error.message}</h2>
+        }
+
+1 ВАРИАНТ
+<!-- ///////////////Navigation 'use client'/////////// -->
+header внутри навигация и навигация будет клиентской так как пользователь взаимодействует с ней.
+Header.tsx
+  const navItems = [
+    {label: "home", href="/",}
+    {label: "home", href="/",}
+    {label: "home", href="/",}
+  ]
+
+  const Header: = () => {
+    <Navigation navLinks={navItems}>
+  }
+
+
+Navigation.tsx
+  'use client'
+  import {usePathname} from 'next/navigation'
+  type NavLink = {
+      label: string
+      href: string
+  }
+  type Props = {
+      navLinks: NavLink[]
+  }
+
+  const Navigation:FC<Props> = (navLinks) => {
+    const pathname = usePathname();
+    return(
+     {navLinks.map(punkt => {
+					return (
+						<li className={styles.item} key={punkt.link}>
+							<Link
+								className={`${styles.link} ${punkt.link === pathname ? styles.active : styles.link}`}
+								href={punkt.link}
+							>
+								{punkt.title}
+							</Link>
+						</li>
+					)
+				})}
+    )
+  }
+
+<!-- ///////////////страница поиск -- поиск по title /////////// -->
+'use client' так как будем искать и использовать хуки...
+             поэтому нельзя функции использовать async
+страница например каталог
+'use client'
+обычная react страница с хуками
+
+2 ВАРИАНТ
+установка zustand
+
+
+
+(info) группировка роутов --- самого info не видно будет.
+
+-------------------------------
+
+можно так же добавлеять к чилдрену старинцы
+@map - папкка
+в лояут 
+export default function Loayut({children, map}: {childern: React.ReactNode, map: React.ReactNode,}) {
+  return (
+    <>
+    {map}
+    {childern}
+
+    </>
+  )
+}
+
+
+
+
+
+--------------------
+[slug]
+  page.tsx
+
+  export async function generateStaticParams() {
+    const posts = await fetch('https://.../posts').then((res) => res.json())
+  
+    return posts.map((post) => ({
+      slug: post.slug.replace(/\s+/g, '-'), ----  регулярное выражение добавляющее тире вместо пробелов
+    }))
+  }
+
+  [slug]
+    page.tsx    -> type Props = {params: {slug: string;}}
+                -> const Post({params: {slug}}: Props) {
+                  return <div>{slug}</div>
+                }
+
+
+ npx json-server --watch db.json --port 3005
+
+
+ ПАРАЛЕЛЬНЫЕ РОУТЕРЫ
+
+ app
+    about
+    info    
+        page
+            это страница инфо
+            не нужно оборачивать компонент
+        @team
+            page                
+        lotyout
+            export const metadata: Metadata = {
+              title: "Info title"
+            }
+            export default function LoayutInfo({children, team}:
+             {childern: React.ReactNode,
+              team: React.ReactNode,}) {
+                return (
+                  <>
+                    {childern} === это страница info её содержимое
+                    {team}
+                  </>
+                )
+            }    
+
+
+
+перехватывающие РОУТЕРЫ
+
+app
+    info
+      page есть ссылка на '/login' переход будет идти на папку (..)login
+       а не на папку на уровне с info это перехват
+       но если перезагрузить страницу то будет папка уже на уровне с info
+       две точки означают поднятся выше и перебить папку login
+       и (..)(..) на два уровня выше
+      (..)login - папкка
+        page
+    login
+      page
